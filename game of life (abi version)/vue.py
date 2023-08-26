@@ -1,18 +1,25 @@
 import sys
 
-from PySide6.QtWidgets import QMainWindow, QApplication, QGraphicsView, QGraphicsScene
+from PySide6.QtWidgets import QMainWindow, QApplication, QGraphicsView, QGraphicsScene, QGraphicsRectItem
 from PySide6.QtGui import QBrush, QPen 
 from PySide6.QtCore import Qt, QTimer
 
-class Vue(QMainWindow):
-    def __init__(self, w_width: int, w_height: int) ->None:
-        scene = QGraphicsScene()
-        graphics_view = QGraphicsView()
-        self.geometry(0, 0, w_width, w_height)
-    
-        self.show()
+from model import Grid
+class Vue(QGraphicsView):
+    def __init__(self, grid: Grid) ->None:
+        super().__init__()
+        self.grahics_scene = QGraphicsScene()
+        self.setScene(self.grahics_scene)
 
     def update_gui(self) -> None:
-        pass
+        self.draw_cell_at(0,0)
+
+    def draw_cell_at(self, x: int, y: int):
+        rect = QGraphicsRectItem(x, y, 1, 1)
+        rect.setBrush(QBrush(Qt.GlobalColor.black))
+        self.grahics_scene.addItem(rect)
+  
+
+
         
         
