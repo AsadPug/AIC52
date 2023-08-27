@@ -1,20 +1,18 @@
 import sys 
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWidgets import QApplication, QMainWindow, QGraphicsScene
 from PySide6.QtCore import QTimer
 
 from model import Grid
 from vue import Vue
 
-class MainApplication(QMainWindow):
+class MainApplication:
     def __init__(self, fps: int, width: int, height: int) -> None:
-        super().__init__()
-        self.window_width = 800    
-        self.window_height = 800
-        self.setWindowTitle("Pyside graphics view")
-        self.setGeometry(0, 0, self.window_width, self.window_height)
         self.delay = (1000 / fps)
+
         self.grid = Grid(width, height)
+
         self.vue = Vue(self.grid)
+
         self.timer = QTimer()
         self.timer.timeout.connect(self.new_generation)
         self.timer.start(self.delay)
@@ -27,8 +25,8 @@ class MainApplication(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    main_application = MainApplication(1, 20, 20)
-    main_application.show()
+    main_application = MainApplication(7, 100, 100)
+    main_application.vue.show()
     app.exec()
 
 if __name__ == "__main__":
