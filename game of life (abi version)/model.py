@@ -11,7 +11,7 @@ class Grid:
             for x in range(0, self.width):
                 if (y != 0 and x != 0 and 
                     y != height -1 and x != width -1):
-                    state = True if random.randint(1, 100) % 6 == 0 else False
+                    state = True if random.randint(1, 100) % 15 == 0 else False
                     self.cells[y].append(state)
                 else:
                     self.cells[y].append(False)

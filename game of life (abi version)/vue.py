@@ -38,8 +38,8 @@ class Vue(QMainWindow):
         self.graphics_scene.addItem(rect)
 
     def draw_cell_at(self, x: int, y: int):
-        cell_width = (self.window_width / self.grid.width)
-        cell_height = (self.window_height / self.grid.height)
+        cell_width = round(self.window_width / self.grid.width)
+        cell_height = round(self.window_height / self.grid.height)
 
         rect = QGraphicsRectItem(
             x * cell_width, y * cell_height,
