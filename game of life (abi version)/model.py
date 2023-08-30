@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 
 class Grid:
     def __init__(self, width: int, height: int) -> None:
@@ -10,15 +11,17 @@ class Grid:
             for x in range(0, self.width):
                 if (y != 0 and x != 0 and 
                     y != height -1 and x != width -1):
-                    state = True if random.randint(1,100)%15==0 else False
+                    state = True if random.randint(1, 100) % 6 == 0 else False
                     self.cells[y].append(state)
                 else:
                     self.cells[y].append(False)
 
     def update_grid(self) -> None:
+        temp_cells: list[list[bool]] = deepcopy(self.cells)
         for y in range(1, self.height - 1):
             for x in range(1, self.width - 1):
-                self.cells[x][y] = self.will_live(x,y)
+                temp_cells[x][y] = self.will_live(x,y)
+        self.cells = temp_cells
 
     def will_live(self, x: int, y: int)-> bool:
         state = self.cells[x][y]

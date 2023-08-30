@@ -25,7 +25,7 @@ class MainApplication:
 
 def main():
     app = QApplication(sys.argv)
-    main_application = MainApplication(7, 100, 100)
+    main_application = MainApplication(1, 20, 20)
     main_application.vue.show()
     app.exec()
 

@@ -22,8 +22,7 @@ class Vue(QMainWindow):
 
         
         self.white_brush = QBrush(Qt.GlobalColor.white)
-        self.grid_pen = QPen(Qt.GlobalColor.black)
-        self.grid_pen.setWidth(1)
+        self.white_pen = QPen(Qt.GlobalColor.white)
         
 
     def update_gui(self) -> None:
@@ -31,7 +30,6 @@ class Vue(QMainWindow):
         self.draw_background()
         self.draw_cells()
         self.graphics_view.fitInView(self.graphics_scene.itemsBoundingRect())
-
 
 
     def draw_background(self) -> None:
@@ -49,6 +47,7 @@ class Vue(QMainWindow):
         )
 
         rect.setBrush(self.white_brush)
+        rect.setPen(self.white_pen)
         self.graphics_scene.addItem(rect)
 
     def draw_cells(self) -> None:
