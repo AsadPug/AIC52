@@ -10,7 +10,7 @@ class Vue(QMainWindow):
         super().__init__()
         self.window_width = 800    
         self.window_height = 800
-        self.setWindowTitle("Pyside graphics view")
+        self.setWindowTitle("Game of life")
         self.setGeometry(0, 0, self.window_width, self.window_height)
         self.setMaximumSize(self.window_width, self.window_height)
         
@@ -22,7 +22,7 @@ class Vue(QMainWindow):
 
         
         self.white_brush = QBrush(Qt.GlobalColor.white)
-        self.white_pen = QPen(Qt.GlobalColor.white)
+        self.grey_pen = QPen(Qt.GlobalColor.gray)
         
 
     def update_gui(self) -> None:
@@ -38,8 +38,8 @@ class Vue(QMainWindow):
         self.graphics_scene.addItem(rect)
 
     def draw_cell_at(self, x: int, y: int):
-        cell_width = round(self.window_width / self.grid.width)
-        cell_height = round(self.window_height / self.grid.height)
+        cell_width = self.window_width / self.grid.width
+        cell_height = self.window_height / self.grid.height
 
         rect = QGraphicsRectItem(
             x * cell_width, y * cell_height,
@@ -47,13 +47,13 @@ class Vue(QMainWindow):
         )
 
         rect.setBrush(self.white_brush)
-        rect.setPen(self.white_pen)
+        rect.setPen(self.grey_pen)
         self.graphics_scene.addItem(rect)
 
     def draw_cells(self) -> None:
         for y in range(self.grid.height):
             for x in range(self.grid.width):
-                if self.grid.cells[x][y] is True:
+                if self.grid.get_cell_at(x,y) is True:
                     self.draw_cell_at(x,y)
         
   

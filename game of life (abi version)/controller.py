@@ -10,7 +10,6 @@ class MainApplication:
         self.delay = (1000 / fps)
 
         self.grid = Grid(width, height)
-
         self.vue = Vue(self.grid)
 
         self.timer = QTimer()
@@ -25,7 +24,7 @@ class MainApplication:
 
 def main():
     app = QApplication(sys.argv)
-    main_application = MainApplication(10, 150, 150)
+    main_application = MainApplication(30, 100, 100)
     main_application.vue.show()
     app.exec()
 
