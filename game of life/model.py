@@ -8,20 +8,24 @@ class GOLEngine:
         self.n_cells_alive = 0
         self.n_cells_dead = 0
         
+        self.fill_grid(50)
 
+        self.__temp_cells: list[list[bool]] = deepcopy(self.__data)
+
+    def fill_grid(self, percent_filled: int) -> None:
         self.__data: list[list[bool]] = [] # valeur de data[x][y] -> état de la case (x, y)
-        for x in range(0, self.width):
-            self.__data.append([])
-            for y in range(0, self.height):
-                if (y != 0 and x != 0 and 
-                    y != height -1 and x != width -1):
 
-                    state = (random.randint(1, 100) % 2 == 0) 
+        for x in range(0, self.__width):
+            self.__data.append([])
+            for y in range(0, self.__height):
+                if (y != 0 and x != 0 and 
+                    y != self.__height -1 and x != self.__width -1):
+
+                    state = (random.randint(1, 100) <= percent_filled) 
                     self.__data[x].append(state)
 
                 else:
                     self.__data[x].append(False)
-        self.__temp_cells: list[list[bool]] = deepcopy(self.__data)
 
     def update_grid(self) -> None:
         
