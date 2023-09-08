@@ -1,10 +1,13 @@
 import random
 from copy import deepcopy
 
-class Grid:
+class GOLEngine:
     def __init__(self, width: int, height: int) -> None:
         self.__width = width
         self.__height = height
+        self.n_cells_alive = 0
+        self.n_cells_dead = 0
+        
 
         self.__data: list[list[bool]] = [] # valeur de data[x][y] -> état de la case (x, y)
         for x in range(0, self.width):
@@ -18,12 +21,22 @@ class Grid:
 
                 else:
                     self.__data[x].append(False)
+        self.__temp_cells: list[list[bool]] = deepcopy(self.__data)
 
     def update_grid(self) -> None:
-        self.__temp_cells: list[list[bool]] = deepcopy(self.__data)
+        
+
+        self.n_cells_alive = 0
+
         for y in range(1, self.height - 1):
             for x in range(1, self.width - 1):
-                self.__temp_cells[x][y] = self.will_live(x,y)
+                will_live = self.will_live(x,y)
+                self.__temp_cells[x][y] = will_live
+                if will_live:
+                    self.n_cells_alive += 1
+        
+        self.n_cells_dead = (self.width * self.height) - self.n_cells_alive
+                
         self.__data, self.__temp_cells  = self.__temp_cells, self.__data
 
     def will_live(self, x: int, y: int)-> bool:
@@ -96,7 +109,7 @@ class Grid:
 
 
 if __name__ == "__main__":
-    grid = Grid(10, 10)
+    grid = GOLEngine(10, 10)
     grid.resize(8, 8)
     grid.height = 6
     print(grid.width,  grid.height)
