@@ -18,7 +18,7 @@ class GOL(QMainWindow):
         self.setWindowTitle("Game of life")
         self.setGeometry(0,0,800,600)
         self.engine = GOLEngine(width, height)
-
+ 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
         self.main_layout = QHBoxLayout(self.central_widget)
@@ -31,10 +31,11 @@ class GOL(QMainWindow):
         
         self.timer = QTimer()
         
-        
-        self.gol_label = GOLLabel(self.engine)
+
+
+        self.gol_label = GOLLabel(self.engine, self.timer)
         self.gui_right = GUIRight(self.engine)
-        self.gui_left = GUILeft(self.engine, self.timer)
+        self.gui_left = GUILeft(self.engine, self.timer, self.refresh_view)
 
         self.main_layout.addLayout(self.gui_left)
         self.gol_background.setLayout(self.gol_layout)
@@ -42,14 +43,10 @@ class GOL(QMainWindow):
         self.main_layout.addWidget(self.gol_background)
         self.main_layout.addLayout(self.gui_right)
         
-
-        
         self.main_layout.setStretchFactor(self.gui_right, 1)
         self.main_layout.setStretchFactor(self.gol_background, 8)
         self.main_layout.setStretchFactor(self.gui_left, 1)
-    
-        
-        
+
         self.timer.timeout.connect(self.update)
         self.delay = (1000 / fps)
         self.timer.start(self.delay)
@@ -57,16 +54,18 @@ class GOL(QMainWindow):
     def update(self) -> None:
         self.gol_label.update()
         self.gui_right.update()
-        self.engine.update_grid()
-        
-        
-    
+        self.engine.tick()
 
-    
+    def refresh_view(self) -> None:
+        self.engine.tick(False)
+        self.gol_label.update()
+        self.gol_label.resize()
+        self.gui_right.update()
+        
 
 def main():
     app = QApplication(sys.argv)
-    gol = GOL(30, 70, 70)
+    gol = GOL(30, 100, 100)
     gol.show()
     sys.exit(app.exec())
 

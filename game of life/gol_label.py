@@ -1,15 +1,16 @@
 from PySide6.QtWidgets import QLabel, QSizePolicy
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QPen, QImage, QPainter, QPixmap
 
 from model import GOLEngine
 
 class GOLLabel(QLabel):
-    def __init__(self, engine: GOLEngine) -> None:
+    def __init__(self, engine: GOLEngine, timer: QTimer) -> None:
         super().__init__()
         self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
 
         self.engine: GOLEngine = engine
+        self.timer: QTimer = timer
         self.setMinimumSize(self.engine.width, self.engine.height)
         
         self.image = QImage(engine.width, engine.height, QImage.Format.Format_RGB16)
@@ -29,6 +30,14 @@ class GOLLabel(QLabel):
             )
         )
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
+    
+    def resize(self) -> None:
+        self.painter.end()
+        self.image = QImage(self.engine.width, self.engine.height, QImage.Format.Format_RGB16)
+        self.painter = QPainter(self.image)
+        self.painter.setPen(self.pen)
+        self.update()
+
     
     def draw_cells(self) -> None:
         for y in range(self.engine.height):
