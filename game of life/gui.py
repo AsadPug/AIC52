@@ -28,6 +28,9 @@ class GUILeft(QVBoxLayout):
         self.fps_button = QPushButton()
         self.size_picker_label = QLabel()
         self.size_picker = QComboBox()
+        self.map_picker_label = QLabel()
+        self.map_picker = QComboBox()
+        self.map_change_button = QPushButton()
         
         self.fill_slider.setOrientation(Qt.Orientation.Horizontal)
         self.fill_slider.setMaximum(100)
@@ -49,6 +52,9 @@ class GUILeft(QVBoxLayout):
         self.size_picker_label.setText("Map size select")
         self.populate_size_picker()
         self.size_picker.setCurrentIndex(6)
+        self.map_picker_label.setText("Premade map select")
+        self.map_picker.addItem("FlowerOfLife")
+        self.map_change_button.clicked.connect(self.change_map)
 
         self.pause_button.clicked.connect(self.pause)
         self.fill_button.clicked.connect(self.fill)
@@ -116,6 +122,11 @@ class GUILeft(QVBoxLayout):
             "50x100"
         ]
         self.size_picker.addItems(options)
+
+    def change_map(self) -> None:
+        map = self.map_picker.currentText()
+        if map is "flowerOfLife":
+            
 
 
 class GUIRight(QVBoxLayout):

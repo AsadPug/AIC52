@@ -55,6 +55,7 @@ class GOL(QMainWindow):
         self.gol_label.update()
         self.gui_right.update()
         self.engine.tick()
+        
 
     def refresh_view(self) -> None:
         self.engine.tick(False)

@@ -43,6 +43,8 @@ class GOLEngine:
                 else:
                     self.__data[x].append(False)
 
+        self.__temp_cells: list[list[bool]] = deepcopy(self.__data)
+
     def will_live(self, x: int, y: int)-> bool:
         state = self.__data[x][y]
         n_neighbour = self.count_neighbour(x,y)
