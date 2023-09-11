@@ -53,13 +53,18 @@ class GUILeft(QVBoxLayout):
         self.populate_size_picker()
         self.size_picker.setCurrentIndex(6)
         self.map_picker_label.setText("Premade map select")
-        self.map_picker.addItem("FlowerOfLife")
-        self.map_change_button.clicked.connect(self.change_map)
+        self.map_picker.addItem("flowerOfLife")
+        self.map_picker.addItem("metatronCube")
+        self.map_picker.addItem("gliderGenerator")
+        self.map_picker.addItem("gliderGenerator2")
+        self.map_picker.addItem("gliderGenerator3")
+        self.map_change_button.setText("Set premade map")
 
         self.pause_button.clicked.connect(self.pause)
         self.fill_button.clicked.connect(self.fill)
         self.fps_button.clicked.connect(self.change_fps)
         self.size_picker.currentTextChanged.connect(self.resize)
+        self.map_change_button.clicked.connect(self.change_map)
 
         self.addWidget(self.pause_button)
         
@@ -76,7 +81,11 @@ class GUILeft(QVBoxLayout):
         self.addWidget(self.size_picker)
 
         self.addStretch()
-    
+
+        self.addWidget(self.map_picker_label)
+        self.addWidget(self.map_picker)
+        self.addWidget(self.map_change_button)
+
     def pause(self) -> None:
         if self.timer.isActive():
             self.timer.stop()
@@ -125,7 +134,8 @@ class GUILeft(QVBoxLayout):
 
     def change_map(self) -> None:
         map = self.map_picker.currentText()
-        if map is "flowerOfLife":
+        self.engine.set_map(map)
+        self.refresh_view()
             
 
 

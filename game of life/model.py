@@ -1,5 +1,22 @@
 import random
 from copy import deepcopy
+from PIL import Image
+
+def load_image(path: str) -> list[list[bool]]:
+    image = Image.open(path, 'r')
+    raw_data = list(image.getdata())
+    data: list[list[bool]] = [] # valeur de data[x][y] -> état de la case (x, y)
+
+    for x in range(0, image.width):
+        data.append([])
+        for y in range(0, image.height):
+            if raw_data[(y * image.width) + x][3] > 150:
+                data[x].append(True)
+            else:
+                data[x].append(False)
+
+    return data
+
 
 class GOLEngine:
     def __init__(self, width: int, height: int) -> None:
@@ -70,6 +87,13 @@ class GOLEngine:
 
         return n_neighbour
     
+    def set_map(self, map: str) -> None:
+        path = "maps/" + map + ".png"
+        map_data = load_image(path)
+        self.resize(len(map_data),len(map_data[0]))
+        self.__data = map_data
+        self.__temp_cells = deepcopy(map_data)
+    
     def resize(self, width: int, height: int):
         self.__data: list[list[bool]] = [] # valeur de data[x][y] -> état de la case (x, y)
 
@@ -107,7 +131,4 @@ class GOLEngine:
     
 
 if __name__ == "__main__":
-    grid = GOLEngine(10, 10)
-    grid.resize(8, 8)
-    grid.height = 6
-    print(grid.width,  grid.height)
+    print(load_image("maps/metatronCube.png"))
