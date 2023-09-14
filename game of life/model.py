@@ -1,4 +1,5 @@
 import random
+import os
 from copy import deepcopy
 from PIL import Image
 
@@ -10,7 +11,7 @@ def load_image(path: str) -> list[list[bool]]:
     for x in range(0, image.width):
         data.append([])
         for y in range(0, image.height):
-            if raw_data[(y * image.width) + x][3] > 150:
+            if raw_data[(y * image.width) + x][3] > 50:
                 data[x].append(True)
             else:
                 data[x].append(False)
@@ -68,10 +69,10 @@ class GOLEngine:
         result = False
 
         if state == True:
-            if 3>= n_neighbour >=2:
+            if n_neighbour in [3,2]:
                 result = True
         else:
-            if n_neighbour == 3:
+            if n_neighbour in [3]:
                 result = True
 
         return result
@@ -88,7 +89,7 @@ class GOLEngine:
         return n_neighbour
     
     def set_map(self, map: str) -> None:
-        path = "maps/" + map + ".png"
+        path = os.path.join(os.path.dirname(__file__), "maps/" + map)
         map_data = load_image(path)
         self.resize(len(map_data),len(map_data[0]))
         self.__data = map_data

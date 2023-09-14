@@ -1,3 +1,5 @@
+import os
+
 from collections.abc import Callable
 
 from PySide6.QtWidgets import (
@@ -53,11 +55,7 @@ class GUILeft(QVBoxLayout):
         self.populate_size_picker()
         self.size_picker.setCurrentIndex(6)
         self.map_picker_label.setText("Premade map select")
-        self.map_picker.addItem("flowerOfLife")
-        self.map_picker.addItem("metatronCube")
-        self.map_picker.addItem("gliderGenerator")
-        self.map_picker.addItem("gliderGenerator2")
-        self.map_picker.addItem("gliderGenerator3")
+        self.populate_map_picker()
         self.map_change_button.setText("Set premade map")
 
         self.pause_button.clicked.connect(self.pause)
@@ -132,6 +130,12 @@ class GUILeft(QVBoxLayout):
         ]
         self.size_picker.addItems(options)
 
+    def populate_map_picker(self) -> None:
+        path = os.path.join(os.path.dirname(__file__), "maps")
+        for _, _, file_names in os.walk(path):
+            for file_name in file_names:
+                self.map_picker.addItem(file_name)
+    
     def change_map(self) -> None:
         map = self.map_picker.currentText()
         self.engine.set_map(map)
@@ -155,7 +159,7 @@ class GUIRight(QVBoxLayout):
         self.addWidget(self.stats_alive)
         self.addWidget(self.stats_dead)
 
-    def update(self) -> None:
+    def set_stats(self, n_cells_alive: int, n_cells_dead) -> None:
         text = f"{self.engine.n_cells_alive} cells alive"
         self.stats_alive.setText(text)
         text = f"{self.engine.n_cells_dead} cells dead"
