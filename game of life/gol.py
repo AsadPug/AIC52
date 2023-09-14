@@ -7,7 +7,7 @@ from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QPalette
 
 from model import GOLEngine
-from gui import GUILeft, GUIRight
+from gui import TimerControlWidget,GOLMapControlWidget,GOLSizeControlWidget, StatsWidget
 from gol_label import GOLLabel
 
 
@@ -22,30 +22,46 @@ class GOL(QMainWindow):
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
         self.main_layout = QHBoxLayout(self.central_widget)
+        
+        self.left_layout = QVBoxLayout()
+
         self.gol_background = QWidget()
         self.gol_bg_palette = QPalette()
         self.gol_bg_palette.setColor(QPalette.ColorRole.Window, Qt.GlobalColor.gray)
         self.gol_background.setAutoFillBackground(True)
         self.gol_background.setPalette(self.gol_bg_palette)
+
         self.gol_layout = QVBoxLayout()
+
+        self.right_layout = QVBoxLayout()
+        self.right_layout.addStretch()
         
         self.timer = QTimer()
         
-
-
         self.gol_label = GOLLabel(self.engine, self.timer)
-        self.gui_right = GUIRight(self.engine)
-        self.gui_left = GUILeft(self.engine, self.timer, self.refresh_view)
+        
+        
+        self.stats_widget = StatsWidget()
+        self.timer_control_widget = TimerControlWidget()
+        self.map_control_widget = GOLMapControlWidget()
+        self.size_control_widget = GOLSizeControlWidget()
 
-        self.main_layout.addLayout(self.gui_left)
+        self.right_layout.addWidget(self.stats_widget)
+        self.left_layout.addWidget(self.timer_control_widget)
+        self.left_layout.addStretch()
+        self.left_layout.addWidget(self.size_control_widget)
+        self.left_layout.addStretch()
+        self.left_layout.addWidget(self.map_control_widget)
+        
+        self.main_layout.addLayout(self.left_layout)
         self.gol_background.setLayout(self.gol_layout)
         self.gol_layout.addWidget(self.gol_label)
         self.main_layout.addWidget(self.gol_background)
-        self.main_layout.addLayout(self.gui_right)
+        self.main_layout.addLayout(self.right_layout)
         
-        self.main_layout.setStretchFactor(self.gui_right, 1)
+        self.main_layout.setStretchFactor(self.right_layout, 1)
         self.main_layout.setStretchFactor(self.gol_background, 8)
-        self.main_layout.setStretchFactor(self.gui_left, 1)
+        self.main_layout.setStretchFactor(self.left_layout, 1)
 
         self.timer.timeout.connect(self.update)
         self.delay = (1000 / fps)
@@ -53,7 +69,9 @@ class GOL(QMainWindow):
         
     def update(self) -> None:
         self.gol_label.update()
-        self.gui_right.update()
+        self.stats_widget.set_stats(
+            self.engine.n_cells_alive, self.engine.n_cells_dead
+        )
         self.engine.tick()
         
 
@@ -61,7 +79,9 @@ class GOL(QMainWindow):
         self.engine.tick(False)
         self.gol_label.update()
         self.gol_label.resize()
-        self.gui_right.update()
+        self.stats_widget.set_stats(
+            self.engine.n_cells_alive, self.engine.n_cells_dead
+        )
         
 
 def main():
