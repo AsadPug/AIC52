@@ -6,15 +6,14 @@ from PySide6.QtCore import QTimer, Qt, Slot
 from PySide6.QtGui import QPalette
 
 from gol_engine import GOLEngine
-from gui import TimerControlWidget,GOLMapControlWidget,GOLSizeControlWidget, StatsWidget
-from gol_label import GOLLabel
+from gui import TimerControlWidget,GOLMapControlWidget,GOLGridControlWidget, StatsWidget
+from gol_widget import GOLWidget
 
 
 class GOL(QMainWindow):
     def __init__(self, fps: int, width: int, height: int) -> None:
         super().__init__()
         self.fps = fps
-        self.engine = GOLEngine(width, height)
         self.timer = QTimer()
 
         self.setWindowTitle("Game of life")
