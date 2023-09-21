@@ -1,12 +1,11 @@
 import sys 
 from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QSizePolicy, QHBoxLayout, QVBoxLayout,
-    QWidget
+    QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget
 )
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QPalette
 
-from model import GOLEngine
+from gol_engine import GOLEngine
 from gui import TimerControlWidget,GOLMapControlWidget,GOLSizeControlWidget, StatsWidget
 from gol_label import GOLLabel
 
@@ -17,7 +16,7 @@ class GOL(QMainWindow):
 
         self.setWindowTitle("Game of life")
         self.setGeometry(0,0,800,600)
-        self.engine = GOLEngine(width, height)
+        self.engine = GOLEngine((width, height))
  
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -86,7 +85,7 @@ class GOL(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    gol = GOL(30, 100, 100)
+    gol = GOL(120, 500, 500)
     gol.show()
     sys.exit(app.exec())
 
