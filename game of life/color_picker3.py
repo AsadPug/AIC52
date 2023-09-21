@@ -150,8 +150,8 @@ class MyApp(QMainWindow):
         
         self.set_central_widget(central_widget)
         
-        self.__pickers[0].colorChanged.connect(self.__pickers[2].set_color)
-        self.__pickers[2].colorChanged.connect(self.__pickers[-1].set_color)
+        #self.__pickers[0].colorChanged.connect(self.__pickers[2].set_color)
+        #self.__pickers[2].colorChanged.connect(self.__pickers[-1].set_color)
         
         
 

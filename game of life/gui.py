@@ -5,11 +5,15 @@ from collections.abc import Callable
 from PySide6.QtWidgets import (
      QVBoxLayout, QLabel, QPushButton, QSlider, QComboBox, QGroupBox, QWidget
 )
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, QTimer, Signal, Slot
 
 from model import GOLEngine
 
 class TimerControlWidget(QGroupBox):
+
+    pause = Signal()
+    changeFps = Signal(int)
+
     def __init__(self):
         super().__init__()
         self.fps = 30
@@ -26,8 +30,11 @@ class TimerControlWidget(QGroupBox):
         self.fps_slider.setMaximum(60)
         self.fps_slider.setMinimum(1)
         self.fps_slider.setSliderPosition(30)
-        self.fps_slider.actionTriggered.connect(self.fps_slide)
         
+        self.pause_button.clicked.connect(self.__emit_pause_signal)
+        self.pause_button.clicked.connect(self.__update_pause_button)
+        self.fps_slider.actionTriggered.connect(self.__fps_slide)
+        self.fps_button.clicked.connect(self.__emit_change_fps_signal)
 
         self.pause_button.setText("Pause")
         self.fps_slider_label.setText(f"{self.fps} fps")
@@ -40,29 +47,36 @@ class TimerControlWidget(QGroupBox):
 
         self.setLayout(self.main_layout)
     
-    def pause(self) -> None:
-        if self.timer.isActive():
-            self.timer.stop()
+    @Slot()
+    def __emit_pause_signal(self) -> None:
+        self.pause.emit()
+
+    @Slot()
+    def __emit_change_fps_signal(self) -> None:
+        self.changeFps.emit(self.fps)
+
+    @Slot()
+    def __update_pause_button(self) -> None:
+        if self.pause_button.text() == "Pause":
             self.pause_button.setText("Start")
         else:
-            self.timer.start()
             self.pause_button.setText("Pause")
-
-    def change_fps(self) -> None:
-        self.timer.stop()
-        self.timer.start(1000/ self.fps)
-
-    def fps_slide(self) -> None:
+    
+    @Slot()
+    def __fps_slide(self) -> None:
         self.fps = self.fps_slider.value()
         self.fps_slider_label.setText(f"{self.fps} fps")
 
-class GOLSizeControlWidget(QGroupBox):
+class GOLGridControlWidget(QGroupBox):
+    fill = Signal(int)
+    changeSize = Signal(int, int)
+    
     def __init__(self):
         super().__init__()
         
         self.fill_percent = 50
 
-        self.setTitle("Size Controls")
+        self.setTitle("Grid Controls")
 
         self.main_layout = QVBoxLayout()
         self.fill_slider_label = QLabel()
@@ -75,7 +89,7 @@ class GOLSizeControlWidget(QGroupBox):
         self.fill_slider.setMaximum(100)
         self.fill_slider.setMinimum(1)
         self.fill_slider.setSliderPosition(50)
-        self.fill_slider.actionTriggered.connect(self.fill_slide)
+        self.fill_slider.actionTriggered.connect(self.__fill_slide)
 
        
         self.fill_slider_label.setText(f"{self.fill_percent} percent alive")
@@ -86,8 +100,9 @@ class GOLSizeControlWidget(QGroupBox):
         self.populate_size_picker()
         self.size_picker.setCurrentIndex(6)
 
-        self.fill_button.clicked.connect(self.fill)
-        self.size_picker.currentTextChanged.connect(self.resize)
+        self.fill_button.clicked.connect(self.__emit_fill_signal)
+        self.fill_slider.valueChanged.connect(self.__fill_slide)
+        self.size_picker.currentTextChanged.connect(self.__emit_resize_signal)
 
         self.main_layout.addWidget(self.fill_slider_label)
         self.main_layout.addWidget(self.fill_slider)
@@ -114,26 +129,24 @@ class GOLSizeControlWidget(QGroupBox):
         ]
         self.size_picker.addItems(options)
 
-    def fill(self) -> None:
-        self.engine.fill_grid(self.fill_percent)
-        self.refresh_view()
+    @Slot()
+    def __emit_fill_signal(self) -> None:
+        self.fill.emit(self.fill_percent)
     
-    def fill_slide(self) -> None:
+    @Slot()
+    def __emit_resize_signal(self) -> None:
+        size_str = self.size_picker.currentText().split("x")
+        self.changeSize.emit(int(size_str[0]), int(size_str[1]))
+    
+    @Slot()
+    def __fill_slide(self) -> None:
         self.fill_percent = self.fill_slider.value()
         self.fill_slider_label.setText(f"{self.fill_percent} percent alive")
-    
-    
-
-    def resize(self) -> None:
-        size = self.size_picker.currentText().split("x")
-        self.engine.resize(int(size[0]),int(size[1]))
-        self.refresh_view()
-
-    
-
-
 
 class GOLMapControlWidget(QGroupBox):
+
+    changeMap = Signal(str)
+
     def __init__(self):
         super().__init__()
 
@@ -148,7 +161,7 @@ class GOLMapControlWidget(QGroupBox):
         self.populate_map_picker()
         self.map_change_button.setText("Set premade map")
 
-        self.map_change_button.clicked.connect(self.change_map)
+        self.map_change_button.clicked.connect(self.__emit_change_map_signal)
 
         self.main_layout.addWidget(self.map_picker_label)
         self.main_layout.addWidget(self.map_picker)
@@ -162,13 +175,11 @@ class GOLMapControlWidget(QGroupBox):
             for file_name in file_names:
                 self.map_picker.addItem(file_name)
 
-      
-    def change_map(self) -> None:
+    @Slot()
+    def __emit_change_map_signal(self) -> None:
         map = self.map_picker.currentText()
-        self.engine.set_map(map)
-        self.refresh_view()
-  
-
+        self.changeMap.emit(map) 
+    
 
 class StatsWidget(QGroupBox):
     def __init__(self) -> None:
