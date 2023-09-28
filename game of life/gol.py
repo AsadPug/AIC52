@@ -11,9 +11,9 @@ from gol_widget import GOLWidget
 
 
 class GOL(QMainWindow):
-    def __init__(self, fps: int, width: int, height: int) -> None:
+    def __init__(self, width: int, height: int) -> None:
         super().__init__()
-        self.fps = fps
+        self.fps = 60
         self.timer = QTimer()
 
         self.setWindowTitle("Game of life")
@@ -57,7 +57,7 @@ class GOL(QMainWindow):
         self.grid_control_widget.fill.connect(self.fill)
         self.grid_control_widget.changeSize.connect(self.change_size)
         self.map_control_widget.changeMap.connect(self.change_map)
-        self.delay = (1000 / fps)
+        self.delay = (1000 / self.fps)
         self.timer.start(self.delay)
         
     def update(self) -> None:
@@ -91,12 +91,13 @@ class GOL(QMainWindow):
 
     @Slot()
     def fill(self, value: int) -> None:
-        self.engine.fill_grid(value)
+        self.engine.fill_data(value/100)
         self.refresh_view()
     
     @Slot()
-    def change_size(self, width: int, height: int) -> None:
-        self.engine.resize(width, height)
+    def change_size(self, w: int, h: int) -> None:
+        self.engine.resize_data((w, h))
+        self.engine.fill_data()
         self.refresh_view()
 
     @Slot()
@@ -107,7 +108,7 @@ class GOL(QMainWindow):
     
 def main():
     app = QApplication(sys.argv)
-    gol = GOL(120, 500, 500)
+    gol = GOL(100, 100)
     gol.show()
     sys.exit(app.exec())
 

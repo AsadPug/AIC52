@@ -27,9 +27,9 @@ class TimerControlWidget(QGroupBox):
         self.fps_button = QPushButton()
 
         self.fps_slider.setOrientation(Qt.Orientation.Horizontal)
-        self.fps_slider.setMaximum(60)
+        self.fps_slider.setMaximum(120)
         self.fps_slider.setMinimum(1)
-        self.fps_slider.setSliderPosition(30)
+        self.fps_slider.setSliderPosition(60)
         
         self.pause_button.clicked.connect(self.__emit_pause_signal)
         self.pause_button.clicked.connect(self.__update_pause_button)
@@ -37,7 +37,7 @@ class TimerControlWidget(QGroupBox):
         self.fps_button.clicked.connect(self.__emit_change_fps_signal)
 
         self.pause_button.setText("Pause")
-        self.fps_slider_label.setText(f"{self.fps} fps")
+        self.fps_slider_label.setText(f"{60} fps")
         self.fps_button.setText("Update fps")
 
         self.main_layout.addWidget(self.pause_button)

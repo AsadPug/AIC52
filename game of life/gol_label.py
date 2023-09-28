@@ -26,14 +26,14 @@ class GOLLabel(QLabel):
             QPixmap(self.image).scaled(
                 self.size().width(), self.size().height(),
                 Qt.KeepAspectRatio,
-                Qt.FastTransformation
+                Qt.fast
             )
         )
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
     
     def resize(self) -> None:
         self.painter.end()
-        self.image = QImage(self.engine.width, self.engine.height, QImage.Format.Format_RGB16)
+        self.image = QImage(self.engine.width, self.engine.height, QImage.Format.Format_Grayscale8)
         self.painter = QPainter(self.image)
         self.painter.setPen(self.pen)
         self.update()

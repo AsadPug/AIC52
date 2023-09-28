@@ -31,8 +31,8 @@ class GOLWidget(QWidget):
         self.gol_label.setPixmap(
             QPixmap(self.image).scaled(
                 self.gol_label.size().width(), self.gol_label.size().height(),
-                Qt.KeepAspectRatio,
-                Qt.FastTransformation
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.FastTransformation
             )
         )
         self.gol_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -44,17 +44,10 @@ class GOLWidget(QWidget):
         self.painter.setPen(self.pen)
         self.update()
 
-    
-    def draw_cells(self) -> None:
-        for y in range(self.engine.height):
-            for x in range(self.engine.width):
-                if self.engine.get_cell_at(x,y) is True:
-                    self.painter.drawPoint(x,y)
-
     def draw_image(self) -> None:
         data = self.engine.data
         gray_color_table = [qRgb(i,i,i) for i in range(256)]
-        self.image = QImage((data * 255).data, data.shape[0], data.shape[1],data.strides[0], QImage.Format.Format_Grayscale8 )
+        self.image = QImage((data * 255).data, data.shape[0], data.shape[1],data.strides[0], QImage.Format.Format_Indexed8 )
         self.image.setColorTable(gray_color_table)
     
     def set_background_color(self) -> None:
